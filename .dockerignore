@@ -1,0 +1,10 @@
+.git
+.next
+.env
+.env.*
+!.env.example
+node_modules
+crm-media
+npm-debug.log*
+docs
+tests

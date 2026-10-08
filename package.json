@@ -1,0 +1,58 @@
+{
+  "name": "queiroz-andrade-crm",
+  "version": "1.0.0",
+  "description": "CRM jurídico QUEIROZ E ANDRADE ADVOGADOS",
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/validation.test.ts",
+    "db:generate": "node scripts/generate-client.mjs",
+    "db:migrate": "node scripts/migrate.mjs",
+    "test:integration": "node scripts/test-db.mjs",
+    "db:admin": "tsx scripts/create-admin.ts",
+    "db:up": "node scripts/local-db.mjs",
+    "setup:local": "node scripts/init-local.mjs",
+    "format": "prettier --write app src scripts tests README.md docs next.config.ts prisma.config.ts tsconfig.json compose.yaml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafaela-bazilio/Rafaela.git"
+  },
+  "license": "ISC",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "dotenv": "^18.0.6",
+    "file-type": "^22.1.1",
+    "next": "^16.4.0",
+    "pdfkit": "^0.20.2",
+    "pg": "^8.23.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@prisma/client-generator-js": "7.10.0",
+    "@prisma/internals": "7.10.0",
+    "@types/node": "^26.6.4",
+    "@types/pdfkit": "^0.17.6",
+    "@types/pg": "^8.23.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "prettier": "^3.9.9",
+    "prisma": "7.10.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.2",
+    "mysql2": "3.24.5"
+  }
+}

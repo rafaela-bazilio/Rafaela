@@ -1,0 +1,1 @@
+ALTER TABLE "AiSettings" ADD COLUMN rules JSONB NOT NULL DEFAULT '[]';

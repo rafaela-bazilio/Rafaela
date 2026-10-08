@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "client"
+}
+datasource db {
+  provider = "postgresql"
+}
+enum Status {
+  NOVO
+  EM_ATENDIMENTO
+  QUER_FECHAR
+  FECHADO
+  PERDIDO
+}
+enum Direction {
+  INBOUND
+  OUTBOUND
+}
+model Lead {
+  id String @id @default(cuid())
+  name String
+  phone String @unique
+  email String?
+  status Status @default(NOVO)
+  humanRequired Boolean @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+  assignedToId String?
+  assignedTo User? @relation(fields:[assignedToId],references:[id])
+  notes Note[]
+  contacts Contact[]
+  messages Message[]
+  logs AuditLog[]
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@index([assignedToId])
+}
+model Contact {
+  id String @id @default(cuid())
+  leadId String
+  lead Lead @relation(fields: [leadId], references: [id])
+  firstContact Boolean @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([createdAt, leadId])
+}
+model Message {
+  id String @id @default(cuid())
+  leadId String
+  lead Lead @relation(fields: [leadId], references: [id])
+  externalId String? @unique
+  direction Direction
+  body String
+  delivery String @default("RECEIVED")
+  filePath String?
+  fileName String?
+  mimeType String?
+  fileSize Int?
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([leadId, createdAt])
+}
+model AuditLog {
+  id String @id @default(cuid())
+  leadId String?
+  lead Lead? @relation(fields: [leadId], references: [id])
+  userId String?
+  user User? @relation(fields:[userId],references:[id])
+  event String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([createdAt])
+}
+model AiSettings {
+  id String @id @default("office")
+  enabled Boolean @default(true)
+  rules Json @default("[]")
+  autoSend Boolean @default(false)
+  greeting String @default("Olá, {nome}! Recebemos sua mensagem. Como podemos direcionar seu atendimento?")
+  handoff String @default("{nome}, vou encaminhar seu atendimento à equipe humana para orientações autorizadas.")
+  systemPrompt String @default("Você é a recepção de um escritório de serviços profissionais.")
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+model User {
+  id String @id @default(cuid())
+  name String
+  email String @unique
+  passwordHash String
+  role String @default("AGENT")
+  active Boolean @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  lastSeenAt DateTime? @db.Timestamptz(3)
+  sessions Session[]
+  assignedLeads Lead[]
+  notes Note[]
+  logs AuditLog[]
+}
+model Session {
+  id String @id
+  userId String
+  user User @relation(fields:[userId],references:[id],onDelete:Cascade)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  expiresAt DateTime @db.Timestamptz(3)
+  @@index([expiresAt])
+}
+model Note {
+  id String @id @default(cuid())
+  leadId String
+  lead Lead @relation(fields:[leadId],references:[id])
+  userId String
+  user User @relation(fields:[userId],references:[id])
+  body String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([leadId,createdAt])
+}
+model LoginAttempt {
+  id String @id @default(cuid())
+  key String
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([key,createdAt])
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "AiSettings" ADD COLUMN "autoSend" BOOLEAN NOT NULL DEFAULT false;
